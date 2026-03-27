@@ -16,18 +16,17 @@ resource "aws_lb" "backend_alb" {
   )
 }
 
-resource "aws_lb_listener" "front_end" {
+resource "aws_lb_listener" "http" {
   load_balancer_arn = aws_lb.backend_alb.arn
   port              = "80"
   protocol          = "HTTP"
-  
 
   default_action {
-       type = "fixed-response"
+    type = "fixed-response"
 
     fixed_response {
-      content_type = "text/plain"
-      message_body = "Fixed response content"
+      content_type = "text/html"
+      message_body = "<h1>Hi, I am from HTTP Backend ALB</h1>"
       status_code  = "200"
     }
   }
