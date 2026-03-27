@@ -8,7 +8,7 @@ terraform {
   }
    backend "s3" {
     bucket = "remote-state-saidevops"
-    key    = "remote-dev-bsckend"
+    key    = "remote-dev-catalogue"
     region = "us-east-1"
     encrypt=true
     use_lockfile=true

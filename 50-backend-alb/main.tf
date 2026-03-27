@@ -1,6 +1,6 @@
-resource "aws_lb" "test" {
-  name               = "test-lb-tf"
-  internal           = false
+resource "aws_lb" "backend_alb" {
+  name               = "${var.project}-${var.environment}"
+  internal           = true
   load_balancer_type = "application"
   security_groups    = [local.backend_alb_sg_id]
   subnets            = local.private_subnet_id
@@ -17,7 +17,7 @@ resource "aws_lb" "test" {
 }
 
 resource "aws_lb_listener" "front_end" {
-  load_balancer_arn = aws_lb.backend.arn
+  load_balancer_arn = aws_lb.backend_alb.arn
   port              = "80"
   protocol          = "HTTP"
   
@@ -33,11 +33,6 @@ resource "aws_lb_listener" "front_end" {
   }
 }
 
-resource "aws_globalaccelerator_accelerator" "main" {
-  name            = "foobar-terraform-accelerator"
-  enabled         = true
-  ip_address_type = "IPV4"
-}
 
 resource "aws_route53_record" "www" {
   zone_id = var.zone_id
@@ -45,8 +40,8 @@ resource "aws_route53_record" "www" {
   type    = "A"
 
   alias {
-    name                   = aws_alb.backend_alb.dns_name
-    zone_id                = aws_alb.backend_alb.zone_id
+    name                   = aws_lb.backend_alb.dns_name
+    zone_id                = aws_lb.backend_alb.zone_id
     evaluate_target_health = true
   }
 }
